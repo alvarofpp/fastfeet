@@ -9,7 +9,7 @@ networks:
     driver: bridge
 
 services:
-# Database
+  # Database
   pgsql-database:
     image: postgres:12.4-alpine
     container_name: fastfeet_postgres
@@ -24,13 +24,13 @@ services:
       LC_ALL: C
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 7s
       timeout: 5s
     volumes:
       - ./data/pgdata:/var/lib/postgresql/data
 
-# Cache
+  # Cache
   redis-cache:
     image: redis:alpine
     container_name: fastfeet_redis
@@ -42,7 +42,7 @@ services:
     volumes:
       - ./data/redis:/data
 
-# Back-end
+  # Back-end
   fastfeet-backend:
     image: node:15.11.0-alpine3.10
     container_name: fastfeet_backend
@@ -62,7 +62,7 @@ services:
       - pgsql-database
       - redis-cache
 
-# Front-end
+  # Front-end
   fastfeet-frontend:
     image: node:15.11.0-alpine3.10
     container_name: fastfeet_frontend
