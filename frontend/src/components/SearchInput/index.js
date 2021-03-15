@@ -1,4 +1,4 @@
-import React, { useState, setState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { MdSearch } from 'react-icons/md';
 import { AiOutlineLoading } from 'react-icons/ai';
