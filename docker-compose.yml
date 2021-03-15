@@ -1,0 +1,83 @@
+version: '3.8'
+
+volumes:
+  main-data:
+    driver: local
+
+networks:
+  main-network:
+    driver: bridge
+
+services:
+# Database
+  pgsql-database:
+    image: postgres:12.4-alpine
+    container_name: fastfeet_postgres
+    networks:
+      - main-network
+    ports:
+      - "49165:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fastfeet
+      LC_ALL: C
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 7s
+      timeout: 5s
+    volumes:
+      - ./data/pgdata:/var/lib/postgresql/data
+
+# Cache
+  redis-cache:
+    image: redis:alpine
+    container_name: fastfeet_redis
+    networks:
+      - main-network
+    ports:
+      - "6382:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data/redis:/data
+
+# Back-end
+  fastfeet-backend:
+    image: node:15.11.0-alpine3.10
+    container_name: fastfeet_backend
+    networks:
+      - main-network
+    ports:
+      - "3333:3333"
+    build: ./backend
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+      - PORT=3333
+    command: "yarn dev"
+    volumes:
+      - ./backend:/app
+    links:
+      - pgsql-database
+      - redis-cache
+
+# Front-end
+  fastfeet-frontend:
+    image: node:15.11.0-alpine3.10
+    container_name: fastfeet_frontend
+    networks:
+      - main-network
+    ports:
+      - "3000:3000"
+    build: ./frontend
+    working_dir: /app
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    stdin_open: true
+    command: "yarn start"
+    volumes:
+      - ./frontend:/app
+    links:
+      - fastfeet-backend
