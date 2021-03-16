@@ -81,3 +81,51 @@ services:
       - ./frontend:/app
 #    links:
 #      - "fastfeet-backend:backend"
+
+### PROBLEMAS
+  # Database
+  problemas-database:
+    image: postgres:12.4-alpine
+    container_name: fastfeet_problemas_postgres
+    networks:
+      - main-network
+    ports:
+      - "49166:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fastfeet_problemas
+      LC_ALL: C
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 7s
+      timeout: 5s
+    volumes:
+      - ./data/problemas_pgdata:/var/lib/postgresql/data
+
+  # Cache
+  problemas-cache:
+    image: redis:alpine
+    container_name: fastfeet_problemas_redis
+    networks:
+      - main-network
+    ports:
+      - "6383:6378"
+    command: redis-server --appendonly yes --port 6378
+    volumes:
+      - ./data/problemas_redis:/data
+
+  problemas-api:
+    build: .problemas/
+    ports:
+      - "8000:8000"
+    #command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .problemas/:/code
+    depends_on:
+      - problemas-database
+      - problemas-cache
+    links:
+      - "problemas-database:database"
+      - "problemas-cache:cache"
