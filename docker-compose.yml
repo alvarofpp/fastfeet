@@ -3,9 +3,17 @@ version: '3.8'
 volumes:
   main-data:
     driver: local
+  problemas-data:
+    driver: local
+  entregas-data:
+    driver: local
 
 networks:
   main-network:
+    driver: bridge
+  problemas-network:
+    driver: bridge
+  entregas-network:
     driver: bridge
 
 services:
@@ -37,7 +45,7 @@ services:
     networks:
       - main-network
     ports:
-      - "6382:6379"
+      - "6380:6379"
     command: redis-server --appendonly yes
     volumes:
       - ./data/redis:/data
@@ -84,11 +92,11 @@ services:
 
 ### PROBLEMAS
   # Database
-  problemas-database:
+  problemas-pgsql-database:
     image: postgres:12.4-alpine
     container_name: fastfeet_problemas_postgres
     networks:
-      - main-network
+      - problemas-network
     ports:
       - "49166:5432"
     environment:
@@ -102,30 +110,50 @@ services:
       interval: 7s
       timeout: 5s
     volumes:
-      - ./data/problemas_pgdata:/var/lib/postgresql/data
+      - ./data/problemas/pgdata:/var/lib/postgresql/data
 
   # Cache
-  problemas-cache:
+  problemas-redis-cache:
     image: redis:alpine
     container_name: fastfeet_problemas_redis
     networks:
-      - main-network
+      - problemas-network
     ports:
-      - "6383:6378"
-    command: redis-server --appendonly yes --port 6378
+      - "6381:6379"
+    command: redis-server --appendonly yes
     volumes:
-      - ./data/problemas_redis:/data
+      - ./data/problemas/redis:/data
 
-  problemas-api:
-    build: .problemas/
+### ENTREGAS
+  # Database
+  entregas-pgsql-database:
+    image: postgres:12.4-alpine
+    container_name: fastfeet_entregas_postgres
+    networks:
+      - entregas-network
     ports:
-      - "8000:8000"
-    #command: python manage.py runserver 0.0.0.0:8000
+      - "49167:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fastfeet_entregas
+      LC_ALL: C
+    restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 7s
+      timeout: 5s
     volumes:
-      - .problemas/:/code
-    depends_on:
-      - problemas-database
-      - problemas-cache
-    links:
-      - "problemas-database:database"
-      - "problemas-cache:cache"
+      - ./data/entregas/pgdata:/var/lib/postgresql/data
+
+  # Cache
+  entregas-redis-cache:
+    image: redis:alpine
+    container_name: fastfeet_entregas_redis
+    networks:
+      - entregas-network
+    ports:
+      - "6382:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - ./data/entregas/redis:/data
