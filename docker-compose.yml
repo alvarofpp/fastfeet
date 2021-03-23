@@ -70,25 +70,25 @@ services:
 #      - "pgsql-database:database"
 #      - "redis-cache:cache"
 
-  # Front-end
-  fastfeet-frontend:
-    image: node:15.11.0-alpine3.10
-    container_name: fastfeet_frontend
-    networks:
-      - main-network
-    ports:
-      - "3000:3000"
-    build: ./frontend
-    working_dir: /app
-    environment:
-      - NODE_ENV=development
-      - PORT=3000
-    stdin_open: true
-    command: "yarn start"
-    volumes:
-      - ./frontend:/app
-#    links:
-#      - "fastfeet-backend:backend"
+#  # Front-end
+#  fastfeet-frontend:
+#    image: node:15.11.0-alpine3.10
+#    container_name: fastfeet_frontend
+#    networks:
+#      - main-network
+#    ports:
+#      - "3000:3000"
+#    build: ./frontend
+#    working_dir: /app
+#    environment:
+#      - NODE_ENV=development
+#      - PORT=3000
+#    stdin_open: true
+#    command: "yarn start"
+#    volumes:
+#      - ./frontend:/app
+##    links:
+##      - "fastfeet-backend:backend"
 
 ### PROBLEMAS
   # Database
