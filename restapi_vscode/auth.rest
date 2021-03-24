@@ -1,0 +1,15 @@
+POST http://localhost:3333/sessions
+Content-Type: application/json
+
+{
+  "email": "admin@fastfeet.com",
+  "password": "123456"
+}
+
+###
+GET http://localhost:3333/sessions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NTQ5MzQ0LCJleHAiOjE2MTcxNTQxNDR9.VJevgvrByZqKXnqAPs3lknhjYOcCNlBAXfXrwt9zN8k
+
+###
+GET http://localhost:3334/problems
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NTQ5MzQ0LCJleHAiOjE2MTcxNTQxNDR9.VJevgvrByZqKXnqAPs3lknhjYOcCNlBAXfXrwt9zN8k
