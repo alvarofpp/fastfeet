@@ -10,8 +10,15 @@ import Queue from '../../lib/Queue';
 
 class DeliveryController {
   async index(req, res) {
-    const { q, page = 1, limit = 5 } = req.query;
+  }
+
+  async index(req, res) {
+    const { q, page = 1, limit = 5, delivery_id } = req.query;
     const where = {};
+
+    if (delivery_id) {
+      where.id = { [Op.in]: delivery_id }
+    }
 
     if (q) {
       where.product = { [Op.iLike]: `%${q}%` };

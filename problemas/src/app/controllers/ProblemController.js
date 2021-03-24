@@ -12,58 +12,24 @@ class ProblemController {
 
     const total = await Problem.count();
 
-    const problems = await Problem.findAll({
+    let problems = await Problem.findAll({
       attributes: ['id', 'description'],
       order: [['id', 'DESC']],
       limit,
-      offset: (page - 1) * limit,
-      include: [
-        {
-          model: Delivery,
-          as: 'delivery',
-          attributes: [
-            'id',
-            'product',
-            'start_date',
-            'end_date',
-            'canceled_at',
-          ],
-          include: [
-            {
-              model: Recipient,
-              as: 'recipient',
-              attributes: [
-                'id',
-                'name',
-                'street',
-                'number',
-                'complement',
-                'state',
-                'city',
-                'zip_code',
-              ],
-            },
-            {
-              model: Deliveryman,
-              as: 'deliveryman',
-              attributes: ['id', 'name', 'email'],
-              include: [
-                {
-                  model: File,
-                  as: 'avatar',
-                  attributes: ['name', 'path', 'url'],
-                },
-              ],
-            },
-            {
-              model: File,
-              as: 'signature',
-              attributes: ['name', 'path', 'url'],
-            },
-          ],
-        },
-      ],
+      offset: (page - 1) * limit
     });
+
+    const delivery_id = problems.reduce((current, item) =>  
+      current.includes(item.delivery_id) ? current  :  [...current, item.delivery_id]
+    , [])
+
+    const deliverys = await backendService.get('/deliverys', { 
+      delivery_id
+    })
+
+    problems = problems.map((problem) => {
+      problem.delivery = deliverys[problem.delivery_id]
+    })
 
     return res.json({
       limit,
