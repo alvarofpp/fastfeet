@@ -5,6 +5,7 @@ import File from '../models/File';
 import Recipient from '../models/Recipient';
 import Queue from '../../lib/Queue';
 import CancellationMail from '../jobs/CancellationMail';
+import entregasService from '../services/entregasService';
 
 class ProblemController {
   async index(req, res) {
@@ -18,17 +19,22 @@ class ProblemController {
       limit,
       offset: (page - 1) * limit
     });
+    
+    // ids unicos de delivery
+    const deliverys_id = [...problems.reduce((current, item) => current.add(item.delivery_id) , new Set())]
 
-    const delivery_id = problems.reduce((current, item) =>  
-      current.includes(item.delivery_id) ? current  :  [...current, item.delivery_id]
-    , [])
+    let { items: deliverys }  = (await entregasService.request(req.auth).get('/delivery', {
+      params: { deliverys_id: JSON.stringify(deliverys_id) }
+    })).data
 
-    const deliverys = await backendService.get('/deliverys', { 
-      delivery_id
-    })
+    deliverys = deliverys.reduce((current, item) => {
+      current[item.id] = item
+      return current 
+    }, {})
 
     problems = problems.map((problem) => {
       problem.delivery = deliverys[problem.delivery_id]
+      return problem
     })
 
     return res.json({

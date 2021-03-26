@@ -38,6 +38,12 @@ class SessionController {
       }),
     });
   }
+
+  async is_authenticated(req, res) {
+    return res.json({
+      userId: req.userId
+    });
+  }
 }
 
 export default new SessionController();
