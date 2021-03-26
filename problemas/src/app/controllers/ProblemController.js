@@ -47,8 +47,9 @@ class ProblemController {
   }
 
   async store(req, res) {
-    const { delivery_id } = req.params;
-    const delivery = await Delivery.findByPk(delivery_id);
+    const { delivery_id } = req.body;
+    
+    const delivery  = (await entregasService.request(req.auth).get(`/delivery/${delivery_id}`)).data
 
     if (!delivery) {
       return res.status(400).json({ error: 'Delivery doest not exists' });
