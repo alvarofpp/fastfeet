@@ -9,10 +9,10 @@ export default async (req, res, next) => {
   }
 
   try {
-    const auth = await authService.request(authHeader).get('/sessions')
+    const auth = await authService.request(authHeader).get('/sessions');
 
-    req.auth = authHeader
-    req.userId = auth.data.userId
+    req.auth = authHeader;
+    req.userId = auth.data.userId;
 
     return next();
   } catch (err) {
