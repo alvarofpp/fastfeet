@@ -6,22 +6,26 @@ Content-Type: application/json
   "password": "123456"
 }
 
+> {%
+client.global.set("user", response.body.user);
+client.global.set("auth_token", response.body.token);
+%}
+
 ###
 GET http://localhost:3333/sessions
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NzMyMDg4LCJleHAiOjE2MTczMzY4ODh9.gdZFMX7diPkC92kCn9ChlpXALhreU9qqYX1VFuhCVAM
+Authorization: Bearer {{auth_token}}
 
 ###
 GET http://localhost:3333/delivery
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NzMyMDg4LCJleHAiOjE2MTczMzY4ODh9.gdZFMX7diPkC92kCn9ChlpXALhreU9qqYX1VFuhCVAM
+Authorization: Bearer {{auth_token}}
 
 ###
 GET http://localhost:3333/delivery/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NzMyMDg4LCJleHAiOjE2MTczMzY4ODh9.gdZFMX7diPkC92kCn9ChlpXALhreU9qqYX1VFuhCVAM
-
+Authorization: Bearer {{auth_token}}
 
 ###
 POST http://localhost:3334/problems
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NzMyMDg4LCJleHAiOjE2MTczMzY4ODh9.gdZFMX7diPkC92kCn9ChlpXALhreU9qqYX1VFuhCVAM
+Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
@@ -31,4 +35,4 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3334/problems
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NzMyMDg4LCJleHAiOjE2MTczMzY4ODh9.gdZFMX7diPkC92kCn9ChlpXALhreU9qqYX1VFuhCVAM
+Authorization: Bearer {{auth_token}}
