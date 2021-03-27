@@ -5,6 +5,7 @@ class Problem extends Model {
     super.init(
       {
         description: Sequelize.STRING,
+        delivery_id: Sequelize.INTEGER
       },
       { sequelize, tableName: 'delivery_problems' }
     );
@@ -13,10 +14,6 @@ class Problem extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Delivery, {
-      foreignKey: 'delivery_id',
-      as: 'delivery',
-    });
   }
 }
 

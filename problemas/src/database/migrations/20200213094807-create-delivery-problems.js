@@ -10,9 +10,6 @@ module.exports = {
       delivery_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: 'deliveries', key: 'id' },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       description: {
         type: Sequelize.STRING,

@@ -203,6 +203,31 @@ class DeliveryController {
     return res.json(deliveryUpdated);
   }
 
+  async cancel(req, res) {
+    const { id } = req.params;
+
+    const delivery = await Delivery.findByPk(id, {
+      include: [
+        { model: Deliveryman, as: 'deliveryman' },
+        { model: Recipient, as: 'recipient' },
+      ],
+    });
+
+    if (!delivery) {
+      return res.status(500).json({
+        error: 'The delivery that reference this problem has been not found',
+      });
+    }
+
+    const { canceled_at } = await delivery.update({
+      canceled_at: new Date(),
+    });
+
+    delivery.canceled_at = canceled_at;
+
+    return res.json();
+  }
+
   async delete(req, res) {
     const delivery = await Delivery.findByPk(req.params.id);
 

@@ -13,7 +13,8 @@ import Pagination from '~/components/Pagination';
 
 import LookProblem from './LookProblem';
 
-import api from '~/services/api';
+import apiProblemas from '~/services/apiProblemas';
+import apiEntregas from '~/services/apiEntregas';
 
 export default function Problems() {
   const [problems, setProblems] = useState([]);
@@ -31,6 +32,19 @@ export default function Problems() {
     });
   }, []);
 
+  const refreshList = useCallback(async function () {
+    async function getDeliverymen() {
+      const response = await apiProblemas.get('problems');
+      const data = parseProblems(response.data.items);
+      setProblems(data);
+      setPage(response.data.page);
+      setPages(response.data.pages);
+      setTotal(response.data.total);
+    }
+
+    getDeliverymen();
+  }, [parseProblems])
+
   const handleLook = useCallback((item) => {
     setLooking(item);
   }, []);
@@ -43,18 +57,19 @@ export default function Problems() {
 
     if (!gonnaCancel) return;
 
-    await api.delete(`/problem/${item.id}/cancel-delivery`);
+    await apiEntregas.delete(`/delivery/${item.delivery_id}/cancel`);
     toast.info(`A encomenda ${item.idText} foi cancelada.`);
 
+    refreshList();
     console.tron.log(gonnaCancel);
-  }, []);
+  }, [refreshList]);
 
   async function handlePagination(n) {
     const params = {
       page: n,
     };
 
-    const response = await api.get('problems', { params });
+    const response = await apiProblemas.get('problems', { params });
     const data = parseProblems(response.data.items);
     setProblems(data);
     setPage(response.data.page);
@@ -63,17 +78,8 @@ export default function Problems() {
   }
 
   useEffect(() => {
-    async function getDeliverymen() {
-      const response = await api.get('problems');
-      const data = parseProblems(response.data.items);
-      setProblems(data);
-      setPage(response.data.page);
-      setPages(response.data.pages);
-      setTotal(response.data.total);
-    }
-
-    getDeliverymen();
-  }, [parseProblems]);
+    refreshList();
+  }, [refreshList]);
 
   return (
     <Container>

@@ -15,6 +15,5 @@ routes.use(authMiddleware);
 
 routes.get('/problems', ProblemController.index);
 routes.post('/problems', ProblemController.store);
-routes.delete('/problem/:id/cancel-delivery', ProblemController.delete);
 
 export default routes;
