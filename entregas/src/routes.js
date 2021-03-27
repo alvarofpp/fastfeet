@@ -9,7 +9,6 @@ import DeliveryController from './app/controllers/DeliveryController';
 import TakeOutController from './app/controllers/TakeOutController';
 import CompleteController from './app/controllers/CompleteController';
 import DeliveryStatusController from './app/controllers/DeliveryStatusController';
-import ProblemController from './app/controllers/ProblemController';
 
 const routes = new Router();
 
@@ -27,9 +26,6 @@ routes.put(
   '/deliveryman/:deliveryman_id/deliveries/:delivery_id',
   CompleteController.update
 );
-
-routes.post('/delivery/:delivery_id/problems', ProblemController.store);
-routes.get('/delivery/:delivery_id/problems', ProblemController.show);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
