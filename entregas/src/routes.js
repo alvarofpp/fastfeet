@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
 import multerConfig from './config/multer';
-import SessionController from './app/controllers/SessionController';
 import authMiddleware from './app/middlewares/auth';
 import RecipientController from './app/controllers/RecipientController';
 import FileController from './app/controllers/FileController';
@@ -16,10 +15,7 @@ const routes = new Router();
 
 const upload = multer(multerConfig);
 
-routes.post('/sessions', SessionController.store);
-
 routes.get('/deliverymen/:id', DeliverymanController.show);
-
 routes.get('/deliveryman/:id/deliveries', DeliveryStatusController.index);
 
 routes.put(
@@ -55,8 +51,5 @@ routes.post('/delivery', DeliveryController.store);
 routes.put('/delivery/:id', DeliveryController.update);
 routes.get('/delivery/:id', DeliveryController.show);
 routes.delete('/delivery/:id', DeliveryController.delete);
-
-routes.get('/problems', ProblemController.index);
-routes.delete('/problem/:id/cancel-delivery', ProblemController.delete);
 
 export default routes;
