@@ -1,0 +1,13 @@
+### Store
+POST {{problem_service}}/problems
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "delivery_id": 1,
+  "description": "A caixa chegou sem lacre."
+}
+
+### Show
+GET {{problem_service}}/problems
+Authorization: Bearer {{auth_token}}

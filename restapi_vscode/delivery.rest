@@ -1,0 +1,67 @@
+#############
+# RECIPIENT #
+#############
+
+### Store
+POST {{delivery_service}}/recipients
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Álvaro FPP",
+  "street": "Rua Sebastião Barreto",
+  "number": "91",
+  "complement": "Bloco X, Apartamento Y",
+  "state": "RN",
+  "city": "Natal",
+  "zip_code": "59080-480"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+
+client.global.set("recipient_id", response.body.id);
+%}
+
+### Show
+GET {{delivery_service}}/recipients/{{recipient_id}}
+Authorization: Bearer {{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+### Update
+PUT {{delivery_service}}/recipients/{{recipient_id}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Álvaro Ferreira Pires de Paiva",
+  "street": "Rua Sebastião Barreto",
+  "number": "91",
+  "complement": "Bloco X, Apartamento Y",
+  "state": "RN",
+  "city": "Natal",
+  "zip_code": "59080-480"
+}
+
+> {%
+client.test("Name changed successfully", function() {
+  client.assert(response.body.name === "Álvaro Ferreira Pires de Paiva", "Name not changed");
+});
+%}
+
+### Destroy
+DELETE {{delivery_service}}/recipients/{{recipient_id}}
+Authorization: Bearer {{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}

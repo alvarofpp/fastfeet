@@ -1,4 +1,5 @@
-POST http://localhost:3333/sessions
+### Login
+POST {{auth_service}}/sessions
 Content-Type: application/json
 
 {
@@ -11,28 +12,15 @@ client.global.set("user", response.body.user);
 client.global.set("auth_token", response.body.token);
 %}
 
-###
-GET http://localhost:3333/sessions
+### Check
+GET {{auth_service}}/sessions
 Authorization: Bearer {{auth_token}}
 
-###
-GET http://localhost:3333/delivery
-Authorization: Bearer {{auth_token}}
-
-###
-GET http://localhost:3333/delivery/1
-Authorization: Bearer {{auth_token}}
-
-###
-POST http://localhost:3334/problems
-Authorization: Bearer {{auth_token}}
-Content-Type: application/json
-
-{
-  "delivery_id": 1,
-  "description": "A caixa chegou sem lacre."
-}
-
-###
-GET http://localhost:3334/problems
-Authorization: Bearer {{auth_token}}
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+client.test("Admin User", function() {
+  client.assert(response.body.userId === 1, "User ID is not 200");
+});
+%}
