@@ -2,6 +2,8 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import api from '~/services/api';
+import apiProblemas from '~/services/apiProblemas';
+import apiEntregas from '~/services/apiEntregas';
 import history from '~/services/history';
 
 import { signInSuccess, signFailure } from './actions';
@@ -18,6 +20,8 @@ export function* signIn({ payload }) {
     const { token, user } = response.data;
 
     api.defaults.headers.Authorization = `Bearer ${token}`;
+    apiProblemas.defaults.headers.Authorization = `Bearer ${token}`;
+    apiEntregas.defaults.headers.Authorization = `Bearer ${token}`;
 
     yield put(signInSuccess(token, user));
 
@@ -33,7 +37,11 @@ export function setToken({ payload }) {
 
   const { token } = payload.auth;
 
-  if (token) api.defaults.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+    apiProblemas.defaults.headers.Authorization = `Bearer ${token}`;
+    apiEntregas.defaults.headers.Authorization = `Bearer ${token}`;
+  }
 }
 
 export function signOut() {
