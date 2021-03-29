@@ -10,7 +10,7 @@ import { PageTitle } from '~/styles/PageTittle';
 
 import Input from '~/components/Input';
 
-import api from '~/services/api';
+import apiEntregas from '~/services/apiEntregas';
 import history from '~/services/history';
 
 const schema = Yup.object().shape({
@@ -37,7 +37,7 @@ export default function NewRecipient({ match }) {
   useEffect(() => {
     async function getRecipient() {
       try {
-        const { data } = await api.get(`recipients/${id}`);
+        const { data } = await apiEntregas.get(`recipients/${id}`);
         setRecipient(data);
       } catch (err) {
         toast.error('Não foi possível localizar este destinatário');
@@ -57,7 +57,7 @@ export default function NewRecipient({ match }) {
   async function handleSubmit(data) {
     if (id) {
       try {
-        await api.put(`recipients/${id}`, data);
+        await apiEntregas.put(`recipients/${id}`, data);
         toast.success('Destinatário alterado com sucesso!');
         history.push('/recipients');
       } catch (err) {
@@ -67,7 +67,7 @@ export default function NewRecipient({ match }) {
       }
     } else {
       try {
-        await api.post('recipients', data);
+        await apiEntregas.post('recipients', data);
         toast.success('Destinatário cadastrado com sucesso!');
         history.push('/recipients');
       } catch (err) {

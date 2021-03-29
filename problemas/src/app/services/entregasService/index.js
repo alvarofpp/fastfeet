@@ -1,18 +1,16 @@
-import axios from 'axios'
-
-
+import axios from 'axios';
 
 export default {
-  request: (authorization) => {
+  request: authorization => {
     const axiosInstance = axios.create({
-      baseURL: 'http://localhost:3333'
-    })
+      baseURL: 'http://localhost:3335',
+    });
 
-    axiosInstance.interceptors.request.use((config) => {
-      config.params = config.params || {}
-      config.headers['Authorization'] = authorization
-      return config
-    })
-    return axiosInstance
-  }
-}
+    axiosInstance.interceptors.request.use(config => {
+      config.params = config.params || {};
+      config.headers['Authorization'] = authorization;
+      return config;
+    });
+    return axiosInstance;
+  },
+};

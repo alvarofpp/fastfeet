@@ -1,5 +1,5 @@
-###
-POST http://localhost:3333/sessions
+### Login
+POST {{auth_service}}/sessions
 Content-Type: application/json
 
 {
@@ -7,8 +7,20 @@ Content-Type: application/json
   "password": "123456"
 }
 
-###
-GET http://localhost:3333/sessions
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE2NzMyMDg4LCJleHAiOjE2MTczMzY4ODh9.gdZFMX7diPkC92kCn9ChlpXALhreU9qqYX1VFuhCVAM
+> {%
+client.global.set("user", response.body.user);
+client.global.set("auth_token", response.body.token);
+%}
 
-###
+### Check
+GET {{auth_service}}/sessions
+Authorization: Bearer {{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+client.test("Admin User", function() {
+  client.assert(response.body.userId === 1, "User ID is not 200");
+});
+%}

@@ -10,7 +10,7 @@ import Input from '~/components/Input';
 import Select from '~/components/Select';
 
 import history from '~/services/history';
-import api from '~/services/api';
+import apiEntregas from '~/services/apiEntregas';
 
 export default function NewDelivery({ match }) {
   const { id } = match.params;
@@ -25,15 +25,15 @@ export default function NewDelivery({ match }) {
     async function loadData() {
       try {
         const [recipientResponse, deliverymanResponse] = await Promise.all([
-          api.get('recipients', { params: { limit: 300 } }),
-          api.get('deliverymen', { params: { limit: 300 } }),
+          apiEntregas.get('recipients', { params: { limit: 300 } }),
+          apiEntregas.get('deliverymen', { params: { limit: 300 } }),
         ]);
 
         setRecipients(recipientResponse.data.items);
         setDeliverymen(deliverymanResponse.data.items);
 
         if (id) {
-          const { data } = await api.get(`delivery/${id}`);
+          const { data } = await apiEntregas.get(`delivery/${id}`);
           setDelivery(data);
           setSelectedRecipient(data.recipient);
           setSelectedDeliveryman(data.deliveryman);
@@ -86,7 +86,7 @@ export default function NewDelivery({ match }) {
 
     if (id) {
       try {
-        await api.put(`delivery/${id}`, data);
+        await apiEntregas.put(`delivery/${id}`, data);
         toast.success('Encomenda atualizada com sucesso!');
         history.push('/deliveries');
       } catch (err) {
@@ -96,7 +96,7 @@ export default function NewDelivery({ match }) {
       }
     } else {
       try {
-        await api.post('delivery', data);
+        await apiEntregas.post('delivery', data);
         toast.success('Encomenda cadastrada com sucesso!');
         history.push('/deliveries');
       } catch (err) {

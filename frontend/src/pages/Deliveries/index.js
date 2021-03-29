@@ -20,7 +20,7 @@ import Table from '~/components/Table';
 import Pagination from '~/components/Pagination';
 import LookDelivery from './LookDelivery';
 
-import api from '~/services/api';
+import apiEntregas from '~/services/apiEntregas';
 import history from '~/services/history';
 
 import { createLetterAvatar } from '~/util/letterAvatar';
@@ -88,7 +88,7 @@ export default function Deliveries() {
 
       if (!gonnaDelete) return;
 
-      await api.delete(`delivery/${delivery.id}`);
+      await apiEntregas.delete(`delivery/${delivery.id}`);
       toast.info(`A encomenda ${delivery.idText} foi excluída!`);
       setDeliveries(deliveries.filter(({ id }) => id !== delivery.id));
     },
@@ -96,7 +96,7 @@ export default function Deliveries() {
   );
 
   async function handleSearch(search) {
-    const response = await api.get(`delivery?q=${search}`);
+    const response = await apiEntregas.get(`delivery?q=${search}`);
     const data = parseDeliveries(response.data.items);
     setDeliveries(data);
     setSearchText(search);
@@ -111,7 +111,7 @@ export default function Deliveries() {
       q: searchText,
     };
 
-    const response = await api.get('delivery', { params });
+    const response = await apiEntregas.get('delivery', { params });
     const data = parseDeliveries(response.data.items);
     setDeliveries(data);
     setPage(response.data.page);
@@ -121,7 +121,7 @@ export default function Deliveries() {
 
   useEffect(() => {
     async function getDeliveries() {
-      const response = await api.get('delivery');
+      const response = await apiEntregas.get('delivery');
       const data = parseDeliveries(response.data.items);
       setDeliveries(data);
       setPage(response.data.page);

@@ -3,7 +3,7 @@ import axios from 'axios';
 export default {
   request: authorization => {
     const axiosInstance = axios.create({
-      baseURL: 'http://localhost:3333',
+      baseURL: 'http://localhost:3334',
     });
 
     axiosInstance.interceptors.request.use(config => {

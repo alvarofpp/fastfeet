@@ -10,7 +10,7 @@ import { PageTitle } from '~/styles/PageTittle';
 import AvatarInput from './AvatarInput';
 import Input from '~/components/Input';
 
-import api from '~/services/api';
+import apiEntregas from '~/services/apiEntregas';
 import history from '~/services/history';
 
 const schema = Yup.object().shape({
@@ -28,7 +28,7 @@ export default function NewDeliveryman({ match }) {
   useEffect(() => {
     async function getRecipient() {
       try {
-        const { data } = await api.get(`deliverymen/${id}`);
+        const { data } = await apiEntregas.get(`deliverymen/${id}`);
         setDeliveryman(data);
       } catch (err) {
         toast.error('Não foi possível localizar este destinatário');
@@ -48,7 +48,7 @@ export default function NewDeliveryman({ match }) {
   async function handleSubmit(data) {
     if (id) {
       try {
-        await api.put(`deliverymen/${id}`, data);
+        await apiEntregas.put(`deliverymen/${id}`, data);
         toast.success('Entregador editado com sucesso!');
         history.push('/deliverymen');
       } catch (err) {
@@ -58,7 +58,7 @@ export default function NewDeliveryman({ match }) {
       }
     } else {
       try {
-        await api.post('deliverymen', data);
+        await apiEntregas.post('deliverymen', data);
         toast.success('Entregador cadastrado com sucesso!');
         history.push('/deliverymen');
       } catch (err) {

@@ -3,7 +3,6 @@ import { Op } from 'sequelize';
 import Delivery from '../models/Delivery';
 import Recipient from '../models/Recipient';
 import Deliveryman from '../models/Deliveryman';
-import Problem from '../models/Problem';
 import File from '../models/File';
 import NewDeliveryMail from '../jobs/NewDeliveryMail';
 import Queue from '../../lib/Queue';
@@ -55,11 +54,6 @@ class DeliveryController {
           as: 'signature',
           attributes: ['name', 'path', 'url'],
         },
-        {
-          model: Problem,
-          as: 'problems',
-          attributes: ['id', 'description', 'createdAt'],
-        },
       ],
     });
     return res.json({
@@ -105,11 +99,6 @@ class DeliveryController {
           model: File,
           as: 'signature',
           attributes: ['name', 'path', 'url'],
-        },
-        {
-          model: Problem,
-          as: 'problems',
-          attributes: ['id', 'description', 'createdAt'],
         },
       ],
     });
