@@ -12,7 +12,7 @@ import Actions from '~/components/Actions';
 import Table from '~/components/Table';
 import Pagination from '~/components/Pagination';
 
-import api from '~/services/api';
+import apiEntregas from '~/services/apiEntregas';
 import history from '~/services/history';
 
 import { createLetterAvatar } from '~/util/letterAvatar';
@@ -39,7 +39,7 @@ export default function Recipients() {
   }, []);
 
   const handleSearch = async (search) => {
-    const response = await api.get(`recipients?q=${search}`);
+    const response = await apiEntregas.get(`recipients?q=${search}`);
     const data = parseRecipients(response.data.items);
     setRecipients(data);
     setSearchText(search);
@@ -61,7 +61,7 @@ export default function Recipients() {
 
       if (!gonnaDelete) return;
 
-      await api.delete(`recipients/${item.id}`);
+      await apiEntregas.delete(`recipients/${item.id}`);
       toast.info(`O destinatário ${item.idText} foi excluído!`);
       setRecipients(recipients.filter(({ id }) => id !== item.id));
     },
@@ -74,7 +74,7 @@ export default function Recipients() {
       q: searchText,
     };
 
-    const response = await api.get('recipients', { params });
+    const response = await apiEntregas.get('recipients', { params });
     const data = parseRecipients(response.data.items);
     setRecipients(data);
     setPage(response.data.page);
@@ -84,7 +84,7 @@ export default function Recipients() {
 
   useEffect(() => {
     async function getDeliverymen() {
-      const response = await api.get('recipients');
+      const response = await apiEntregas.get('recipients');
       const data = parseRecipients(response.data.items);
       setRecipients(data);
       setPage(response.data.page);

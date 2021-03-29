@@ -12,7 +12,7 @@ import Actions from '~/components/Actions';
 import Table from '~/components/Table';
 import Pagination from '~/components/Pagination';
 
-import api from '~/services/api';
+import apiEntregas from '~/services/apiEntregas';
 import history from '~/services/history';
 
 import { createLetterAvatar } from '~/util/letterAvatar';
@@ -36,7 +36,7 @@ export default function Deliverymen() {
   }, []);
 
   const handleSearch = async (search) => {
-    const response = await api.get(`deliverymen?q=${search}`);
+    const response = await apiEntregas.get(`deliverymen?q=${search}`);
     const data = parseDeliverymen(response.data.items);
     setDeliverymen(data);
     setSearchText(search);
@@ -58,7 +58,7 @@ export default function Deliverymen() {
 
       if (!gonnaDelete) return;
 
-      await api.delete(`deliverymen/${deliveryman.id}`);
+      await apiEntregas.delete(`deliverymen/${deliveryman.id}`);
       toast.info(`O entregador ${deliveryman.idText} foi excluído!`);
       setDeliverymen(deliverymen.filter(({ id }) => id !== deliveryman.id));
     },
@@ -71,7 +71,7 @@ export default function Deliverymen() {
       q: searchText,
     };
 
-    const response = await api.get('deliverymen', { params });
+    const response = await apiEntregas.get('deliverymen', { params });
     const data = parseDeliverymen(response.data.items);
     setDeliverymen(data);
     setPage(response.data.page);
@@ -81,7 +81,7 @@ export default function Deliverymen() {
 
   useEffect(() => {
     async function getDeliverymen() {
-      const response = await api.get('deliverymen');
+      const response = await apiEntregas.get('deliverymen');
       const data = parseDeliverymen(response.data.items);
       setDeliverymen(data);
       setPage(response.data.page);
