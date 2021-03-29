@@ -1,7 +1,3 @@
-#############
-# RECIPIENT #
-#############
-
 ### Store
 POST {{delivery_service}}/recipients
 Authorization: Bearer {{auth_token}}
@@ -23,6 +19,19 @@ client.test("Request executed successfully", function() {
 });
 
 client.global.set("recipient_id", response.body.id);
+%}
+
+### Index
+GET {{delivery_service}}/recipients
+Authorization: Bearer {{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+client.test("Items length correctly", function() {
+  client.assert(response.body.items.length > 0, "Items length not correctly");
+});
 %}
 
 ### Show
