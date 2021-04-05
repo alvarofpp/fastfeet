@@ -6,6 +6,7 @@ import Deliveryman from '../models/Deliveryman';
 import File from '../models/File';
 import NewDeliveryMail from '../jobs/NewDeliveryMail';
 import Queue from '../../lib/Queue';
+import problemasService from '../services/problemasService';
 
 class DeliveryController {
   async index(req, res) {
@@ -56,6 +57,18 @@ class DeliveryController {
         },
       ],
     });
+
+    // ids unicos de delivery
+    const deliveries_id = [
+      ...deliveries.reduce((current, item) => current.add(item.id), new Set()),
+    ];
+
+    let { items: problems } = (
+      await problemasService.request(req.auth).get('/problems', {
+        params: { deliveries_id: JSON.stringify(deliveries_id) },
+      })
+    ).data;
+
     return res.json({
       limit,
       page: Number(page),
@@ -194,6 +207,31 @@ class DeliveryController {
     await delivery.destroy();
 
     return res.status(200).json();
+  }
+
+  async cancel(req, res) {
+    const { id } = req.params;
+
+    const delivery = await Delivery.findByPk(id, {
+      include: [
+        { model: Deliveryman, as: 'deliveryman' },
+        { model: Recipient, as: 'recipient' },
+      ],
+    });
+
+    if (!delivery) {
+      return res.status(500).json({
+        error: 'The delivery that reference this problem has been not found',
+      });
+    }
+
+    const { canceled_at } = await delivery.update({
+      canceled_at: new Date(),
+    });
+
+    delivery.canceled_at = canceled_at;
+
+    return res.json();
   }
 }
 
