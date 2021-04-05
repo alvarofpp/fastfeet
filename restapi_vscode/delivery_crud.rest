@@ -1,0 +1,63 @@
+### Store
+POST {{delivery_service}}/delivery
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Álvaro FPP",
+  "email": "alvarofepipa@gmail.com"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+
+client.global.set("deliveryman_id", response.body.id);
+%}
+
+### Index
+GET {{delivery_service}}/delivery
+Authorization: Bearer {{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+### Show
+GET {{delivery_service}}/delivery/{{deliveryman_id}}
+Authorization: Bearer {{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+### Update
+PUT {{delivery_service}}/delivery/{{deliveryman_id}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "name": "Álvaro Ferreira Pires de Paiva",
+  "email": "alvarofepipa@gmail.com"
+}
+
+> {%
+client.test("Name changed successfully", function() {
+  client.assert(response.body.name === "Álvaro Ferreira Pires de Paiva", "Name not changed");
+});
+%}
+
+### Destroy
+DELETE {{delivery_service}}/delivery/{{deliveryman_id}}
+Authorization: Bearer {{auth_token}}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}

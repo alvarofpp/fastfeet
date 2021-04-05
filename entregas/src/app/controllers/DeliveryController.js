@@ -10,9 +10,14 @@ import problemasService from '../services/problemasService';
 
 class DeliveryController {
   async index(req, res) {
-    const { q, page = 1, limit = 5 } = req.query;
+    // eslint-disable-next-line prefer-const
+    let { q, page = 1, limit = 5, deliveries_id } = req.query;
     const where = {};
 
+    if (deliveries_id) {
+      deliveries_id = JSON.parse(deliveries_id);
+      where.id = { [Op.in]: deliveries_id };
+    }
     if (q) {
       where.product = { [Op.iLike]: `%${q}%` };
     }
@@ -59,6 +64,7 @@ class DeliveryController {
     });
 
     // ids unicos de delivery
+    /*
     const deliveries_id = [
       ...deliveries.reduce((current, item) => current.add(item.id), new Set()),
     ];
@@ -68,6 +74,7 @@ class DeliveryController {
         params: { deliveries_id: JSON.stringify(deliveries_id) },
       })
     ).data;
+    */
 
     return res.json({
       limit,

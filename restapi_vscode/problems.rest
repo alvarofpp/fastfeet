@@ -11,3 +11,7 @@ Content-Type: application/json
 ### Show
 GET {{problem_service}}/problems
 Authorization: Bearer {{auth_token}}
+
+{
+  "deliveries_id": [1]
+}
