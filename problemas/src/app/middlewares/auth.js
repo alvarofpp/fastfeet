@@ -1,5 +1,4 @@
-import authService from "../services/authService";
-
+import authService from '../services/authService';
 
 export default async (req, res, next) => {
   const authHeader = req.headers.authorization;

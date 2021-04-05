@@ -8,7 +8,7 @@ export default {
 
     axiosInstance.interceptors.request.use(config => {
       config.params = config.params || {};
-      config.headers['Authorization'] = authorization;
+      config.headers.Authorization = authorization;
       return config;
     });
     return axiosInstance;
