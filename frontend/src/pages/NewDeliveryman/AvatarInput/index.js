@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useField } from '@rocketseat/unform';
 import { MdImage } from 'react-icons/md';
-import api from '~/services/api';
+import apiEntregas from '~/services/apiEntregas';
 import { Container } from './styles';
 
 export default function AvatarInput() {
@@ -27,7 +27,7 @@ export default function AvatarInput() {
 
     data.append('file', e.target.files[0]);
 
-    const response = await api.post('files', data);
+    const response = await apiEntregas.post('files', data);
 
     const { id, url } = response.data;
 
