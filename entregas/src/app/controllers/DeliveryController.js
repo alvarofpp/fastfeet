@@ -11,19 +11,23 @@ import problemasService from '../services/problemasService';
 class DeliveryController {
   async index(req, res) {
     // eslint-disable-next-line prefer-const
-    let { q, page = 1, limit = 5, deliveries_id } = req.query;
+    const { q, page = 1, limit = 5, id_in } = req.query
+
+    let { fk_exclude } = req.query
+    fk_exclude = fk_exclude ? JSON.parse(fk_exclude) : []
+
     const where = {};
 
-    if (deliveries_id) {
-      deliveries_id = JSON.parse(deliveries_id);
-      where.id = { [Op.in]: deliveries_id };
+    if (id_in) {
+      where.id = { [Op.in]: JSON.parse(id_in) };
     }
+
     if (q) {
       where.product = { [Op.iLike]: `%${q}%` };
     }
 
     const total = await Delivery.count({ where });
-    const deliveries = await Delivery.findAll({
+    let deliveries = await Delivery.findAll({
       where,
       attributes: ['id', 'product', 'canceled_at', 'start_date', 'end_date'],
       order: [['id', 'DESC']],
@@ -63,18 +67,34 @@ class DeliveryController {
       ],
     });
 
-    // ids unicos de delivery
-    /*
-    const deliveries_id = [
-      ...deliveries.reduce((current, item) => current.add(item.id), new Set()),
-    ];
+    if (!fk_exclude.includes('problems')) {
+      // ids unicos de delivery
+      const delivery_id_in = [
+        ...deliveries.reduce((current, item) => current.add(item.id), new Set()),
+      ];
 
-    let { items: problems } = (
-      await problemasService.request(req.auth).get('/problems', {
-        params: { deliveries_id: JSON.stringify(deliveries_id) },
-      })
-    ).data;
-    */
+      let { items: problems } = (
+        await problemasService.request(req.auth).get('/problems', {
+          params: {
+            limit: 1000,
+            delivery_id_in: JSON.stringify(delivery_id_in),
+            fk_exclude: JSON.stringify(["delivery"])
+          },
+        })
+      ).data;
+
+      problems = problems.reduce((current, item) => {
+        current[item.delivery_id] = current[item.delivery_id] || []
+        current[item.delivery_id].push(item)
+        return current;
+      }, {});
+
+      deliveries = deliveries.map(delivery => {
+        console.log(delivery.id)
+        delivery.dataValues.problems = problems[delivery.id]
+        return delivery;
+      });
+    }
 
     return res.json({
       limit,

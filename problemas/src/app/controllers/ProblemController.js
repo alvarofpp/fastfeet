@@ -1,43 +1,64 @@
+import { Op } from 'sequelize';
 import Problem from '../models/Problem';
 import entregasService from '../services/entregasService';
 
 class ProblemController {
   async index(req, res) {
-    const { page = 1, limit = 5 } = req.query;
-    const total = await Problem.count();
+    const { page = 1, limit = 5, id_in, delivery_id_in} = req.query
+
+    let { fk_exclude } = req.query
+    fk_exclude = fk_exclude ? JSON.parse(fk_exclude) : []
+    
+    const where = {};
+
+    if (id_in) {
+      where.id = { [Op.in]: JSON.parse(id_in) };
+    }
+
+    if (delivery_id_in) {
+      where.delivery_id = { [Op.in]: JSON.parse(delivery_id_in) };
+    }
+
+    const total = await Problem.count({ where });
 
     let problems = await Problem.findAll({
-      attributes: ['id', 'description', 'delivery_id'],
+      where,
+      attributes: ['id', 'description', 'delivery_id', 'createdAt'],
       order: [['id', 'DESC']],
       limit,
       offset: (page - 1) * limit,
     });
 
-    // ids unicos de delivery
-    const deliverys_id = [
-      ...problems.reduce(
-        (current, item) => current.add(item.delivery_id),
-        new Set()
-      ),
-    ];
+    if (!fk_exclude.includes('delivery')) {
+      // ids unicos de delivery
+      const delivery_in = [
+        ...problems.reduce(
+          (current, item) => current.add(item.delivery_id),
+          new Set()
+        ),
+      ];
 
-    let { items: deliverys } = (
-      await entregasService.request(req.auth).get('/delivery', {
-        params: { deliveries_id: JSON.stringify(deliverys_id) },
-      })
-    ).data;
+      let { items: deliverys } = (
+        await entregasService.request(req.auth).get('/delivery', {
+          params: {
+            id_in: JSON.stringify(delivery_in),
+            fk_exclude: JSON.stringify(['problems'])
+          },
+        })
+      ).data;
 
-    deliverys = deliverys.reduce((current, item) => {
-      current[item.id] = item;
-      return current;
-    }, {});
+      deliverys = deliverys.reduce((current, item) => {
+        current[item.id] = item;
+        return current;
+      }, {});
 
-    problems = problems.map(problem => {
-      problem.dataValues.delivery = deliverys[problem.delivery_id];
-      return problem;
-    });
+      problems = problems.map(problem => {
+        problem.dataValues.delivery = deliverys[problem.delivery_id];
+        return problem;
+      });
 
-    problems = problems.filter(problem => problem.dataValues.delivery);
+      problems = problems.filter(problem => problem.dataValues.delivery);
+    }
 
     return res.json({
       limit,

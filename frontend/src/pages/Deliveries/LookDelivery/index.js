@@ -20,7 +20,7 @@ export default function LookDelivery({ delivery, closeCallback }) {
     end_date,
     canceled_at,
     recipient,
-    //problems,
+    problems,
     signature,
   } = delivery;
 
@@ -75,7 +75,7 @@ export default function LookDelivery({ delivery, closeCallback }) {
             </p>
           )}
 
-          {/*problems.length > 0 && (
+          {problems.length > 0 && (
             <div>
               <hr />
               <strong>Problemas ocorridos</strong>
@@ -88,7 +88,7 @@ export default function LookDelivery({ delivery, closeCallback }) {
                 </div>
               ))}
             </div>
-          )*/}
+          )}
 
           {signature && (
             <>

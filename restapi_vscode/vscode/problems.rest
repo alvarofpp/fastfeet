@@ -1,0 +1,17 @@
+### Store
+POST http://localhost:3334/problems
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE3NzE3MDcwLCJleHAiOjE2MTgzMjE4NzB9.sevgOlaoVsJXpB3pYYfznaMUTqtb5zqqN80vjSiQAa8
+Content-Type: application/json
+
+{
+  "delivery_id": 2,
+  "description": "Rasgado."
+}
+
+### Show
+GET http://localhost:3334/problems
+  ?id_in=[1,2,3]
+  &delivery_id_in=[1,2]
+  &fk_exclude=["delivery"]
+  &limit=1000
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjE3NzE3MDcwLCJleHAiOjE2MTgzMjE4NzB9.sevgOlaoVsJXpB3pYYfznaMUTqtb5zqqN80vjSiQAa8

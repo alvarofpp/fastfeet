@@ -4,6 +4,10 @@ class Delivery extends Model {
   static init(sequelize) {
     super.init(
       {
+        problems: {
+          type: Sequelize.VIRTUAL,
+          defaultValue: []
+        },
         product: {
           type: Sequelize.STRING,
           allowNull: false,
